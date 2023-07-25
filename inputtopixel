@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pixel Art</title>
+  <style>
+    .pixel {
+      width: 10px;
+      height: 10px;
+      border: 1px solid #ccc;
+      display: inline-block;
+      box-sizing: border-box; /* Include border in the width and height */
+    }
+
+    /* Define the size for the pixel art canvas */
+    #canvas {
+      width: 322px; /* 32 pixels * 10px width per pixel + 2px for border */
+      height: 322px; /* 32 pixels * 10px height per pixel + 2px for border */
+      border: 1px solid #000;
+      line-height: 0; /* Remove extra spacing between inline-block elements */
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h2>Pixel Art</h2>
+    <p>Enter array of numbers in the format: color,row,column (e.g., (1,2,3);(2,5,7);...)</p>
+    <input type="text" id="pixelInput" placeholder="Enter array of pixels">
+    <button onclick="drawPixels()">Draw Pixels</button>
+  </div>
+  <div>
+    <h3>Canvas</h3>
+    <div id="canvas">
+      <!-- Create the 32x32 pixel art canvas -->
+      <!-- The canvas will be 32x32 using a fixed size of 322px x 322px (2px added for border) -->
+      <!-- The JavaScript code will set the background color of each pixel based on user input -->
+      <!-- For now, the canvas is empty and all pixels are white -->
+      <!-- We'll update the pixel colors when the user clicks the 'Draw Pixels' button -->
+      <!-- The JavaScript code to update the pixel colors is provided later in the code -->
+    </div>
+  </div>
+
+  <script>
+    function drawPixels() {
+      const pixelInput = document.getElementById('pixelInput').value;
+
+      // Remove any spaces in the input and split the pixel array
+      const pixelArray = pixelInput.replace(/\s/g, '').split(';');
+
+      // Clear the existing canvas before drawing new pixels
+      document.getElementById('canvas').innerHTML = '';
+
+      // Create the pixel art canvas
+      for (let i = 0; i < 32; i++) {
+        for (let j = 0; j < 32; j++) {
+          const pixel = document.createElement('div');
+          pixel.classList.add('pixel');
+          pixel.id = `pixel-${i}-${j}`;
+
+          // Set all pixels to white initially
+          pixel.style.backgroundColor = '#ffffff';
+          document.getElementById('canvas').appendChild(pixel);
+        }
+      }
+
+      pixelArray.forEach(pixelString => {
+        // Remove the parenthesis and split the pixel string into an array of color, row, and column
+        const pixelData = pixelString.replace(/[\(\)]/g, '').split(',');
+
+        // Check if the pixel data is valid (contains 3 values)
+        if (pixelData.length === 3) {
+          const color = getColorCode(parseInt(pixelData[0]));
+          const rowInput = parseInt(pixelData[1]);
+          const colInput = parseInt(pixelData[2]);
+
+          // Check if the entered row and column numbers are within the canvas bounds
+          if (isNaN(rowInput) || isNaN(colInput) || rowInput < 0 || rowInput >= 32 || colInput < 0 || colInput >= 32) {
+            console.error(`Invalid row or column number for pixel: ${pixelString}. Ignoring this pixel.`);
+            return;
+          }
+
+          // Get the pixel div for the specified row and column
+          const pixel = document.getElementById(`pixel-${rowInput}-${colInput}`);
+          pixel.style.backgroundColor = color;
+        } else {
+          console.error(`Invalid format for pixel data: ${pixelString}. Ignoring this pixel.`);
+        }
+      });
+    }
+
+    function getColorCode(colorNumber) {
+      switch (colorNumber) {
+        case 1:
+          return '#ff0000'; // Red
+        case 2:
+          return '#00ff00'; // Green
+        case 3:
+          return '#ffffff'; // White
+        case 4:
+          return '#000000'; // Black
+        case 5:
+          return '#ffff00'; // Yellow
+        case 6:
+          return '#0000ff'; // Blue
+        case 7:
+          return '#8a2be2'; // Violet
+        case 8:
+          return '#ffa500'; // Orange
+        default:
+          return '#000000'; // Default color: black
+      }
+    }
+  </script>
+</body>
+</html>
